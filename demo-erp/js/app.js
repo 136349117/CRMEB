@@ -673,14 +673,12 @@ $("#btnDemo").addEventListener("click", () => {
   if (demoTimer) {
     clearInterval(demoTimer);
     demoTimer = null;
-    btn.textContent = "▶ 自动巡航（录屏）";
+    btn.textContent = "▶ 自动演示（录屏）";
     btn.classList.remove("run");
-    $("#recBadge").classList.add("hidden");
     return;
   }
-  btn.textContent = "■ 停止巡航";
+  btn.textContent = "■ 停止";
   btn.classList.add("run");
-  $("#recBadge").classList.remove("hidden");
   let i = 0;
   show(demoOrder[0]);
   demoTimer = setInterval(() => {
