@@ -466,7 +466,7 @@ $("#btnDemo").addEventListener("click", () => {
   demoTimer = setInterval(() => {
     i = (i + 1) % demoOrder.length;
     show(demoOrder[i]);
-  }, 7000);
+  }, 3500);
 });
 
 show("dash");
