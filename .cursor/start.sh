@@ -15,6 +15,38 @@ fi
 
 log() { printf '[start] %s\n' "$*"; }
 
+write_env() {
+  cat >"${CRMEB}/.env" <<'EOF'
+APP_DEBUG = true
+
+[APP]
+DEFAULT_TIMEZONE = Asia/Shanghai
+
+[DATABASE]
+TYPE = mysql
+HOSTNAME = 127.0.0.1
+HOSTPORT = 3306
+USERNAME = crmeb
+PASSWORD = 'crmeb'
+DATABASE = crmeb
+PREFIX = eb_
+CHARSET = utf8
+DEBUG = true
+
+[LANG]
+default_lang = zh-cn
+
+[REDIS]
+REDIS_HOSTNAME = 127.0.0.1
+PORT = 6379
+REDIS_PASSWORD =
+SELECT = 0
+
+[QUEUE]
+QUEUE_NAME = crmeb
+EOF
+}
+
 mysql_ready() {
   "${SUDO[@]}" mysqladmin ping --protocol=socket >/dev/null 2>&1 \
     || "${SUDO[@]}" mysqladmin ping -h 127.0.0.1 -uroot --skip-password >/dev/null 2>&1 \
@@ -128,6 +160,7 @@ EOF
 
 start_mysql
 start_redis
+write_env
 ensure_database
 write_lock
 log "Start complete"
