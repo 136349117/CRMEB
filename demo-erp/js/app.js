@@ -21,10 +21,10 @@ function renderDash() {
       </div>
     </div>
     <div class="kpis">
-      <div class="kpi"><div class="label">今日成交额</div><div class="val" id="kpiGmv">¥ 18,642,000</div><div class="delta">较昨日 +12.8%</div></div>
+      <div class="kpi"><div class="label">今日成交额</div><div class="val" id="kpiGmv">¥ 368,600</div><div class="delta">较昨日 +12.8%</div></div>
       <div class="kpi"><div class="label">在制工单</div><div class="val" id="kpiWo">1,284</div><div class="delta">准交率 96.4%</div></div>
       <div class="kpi"><div class="label">设备在线率</div><div class="val" id="kpiOnline">98.6%</div><div class="delta">掉线 17 台 · 自动工单已派</div></div>
-      <div class="kpi"><div class="label">本月新增合同</div><div class="val">¥ 2.37 亿</div><div class="delta down">回款周期 41 天</div></div>
+      <div class="kpi"><div class="label">本月新增合同</div><div class="val">¥ 86.4 万</div><div class="delta down">回款周期 41 天</div></div>
     </div>
     <div class="grid-2">
       <div class="card"><h3>近 12 个月 · 硬件 + 软件订货</h3><div id="chartSales" class="chart"></div></div>
@@ -328,7 +328,7 @@ show("dash");
 setInterval(() => {
   const el = $("#kpiGmv");
   if (!el) return;
-  const base = 18642000 + Math.round(Math.random() * 80000);
+  const base = 368600 + Math.round(Math.random() * 24000);
   el.textContent = money(base);
 }, 2500);
 
