@@ -16,7 +16,7 @@ function renderDash() {
     <div class="hero">
       <img src="img/hero-factory.jpg" alt="数字工厂" />
       <div class="copy">
-        <h1>星枢工业互联网 · 集团指挥舱</h1>
+        <h1>码农老赵工业互联网 · 集团指挥舱</h1>
         <p>连接 128 家工厂 · 46,800 台设备 · 实时看见订单、产线、能耗与质量</p>
       </div>
     </div>
