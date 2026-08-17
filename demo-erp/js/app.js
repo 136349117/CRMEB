@@ -16,15 +16,15 @@ function renderDash() {
     <div class="hero">
       <img src="img/hero-factory.jpg" alt="数字工厂" />
       <div class="copy">
-        <h1>码农老赵工业互联网 · 集团指挥舱</h1>
-        <p>连接 128 家工厂 · 46,800 台设备 · 实时看见订单、产线、能耗与质量</p>
+        <h1>码农老赵工业互联网 · 经营指挥舱</h1>
+        <p>服务 18 家工厂客户 · 86 台在管设备 · 实时看见订单、产线、能耗与质量</p>
       </div>
     </div>
     <div class="kpis">
-      <div class="kpi"><div class="label">今日成交额</div><div class="val" id="kpiGmv">¥ 368,600</div><div class="delta">较昨日 +12.8%</div></div>
-      <div class="kpi"><div class="label">在制工单</div><div class="val" id="kpiWo">1,284</div><div class="delta">准交率 96.4%</div></div>
-      <div class="kpi"><div class="label">设备在线率</div><div class="val" id="kpiOnline">98.6%</div><div class="delta">掉线 17 台 · 自动工单已派</div></div>
-      <div class="kpi"><div class="label">本月新增合同</div><div class="val">¥ 86.4 万</div><div class="delta down">回款周期 41 天</div></div>
+      <div class="kpi"><div class="label">今日成交额</div><div class="val" id="kpiGmv">¥ 86,400</div><div class="delta">较昨日 +12.8%</div></div>
+      <div class="kpi"><div class="label">在制工单</div><div class="val" id="kpiWo">48</div><div class="delta">准交率 96.4%</div></div>
+      <div class="kpi"><div class="label">设备在线率</div><div class="val" id="kpiOnline">97.8%</div><div class="delta">掉线 2 台 · 工单已派</div></div>
+      <div class="kpi"><div class="label">本月新增合同</div><div class="val">¥ 36.8 万</div><div class="delta down">回款周期 41 天</div></div>
     </div>
     <div class="grid-2">
       <div class="card"><h3>近 12 个月 · 硬件 + 软件订货</h3><div id="chartSales" class="chart"></div></div>
@@ -37,16 +37,16 @@ function renderDash() {
     </div>
   `;
   const months = ["9月","10月","11月","12月","1月","2月","3月","4月","5月","6月","7月","8月"];
-  const hw = [420, 480, 510, 690, 430, 390, 620, 710, 760, 820, 880, 940];
-  const sw = [80, 95, 110, 140, 120, 100, 150, 170, 190, 210, 230, 260];
+  const hw = [16, 18, 21, 32, 14, 12, 22, 24, 28, 31, 34, 36];
+  const sw = [3, 4, 5, 7, 5, 4, 6, 7, 8, 8, 9, 10];
   const sales = echarts.init($("#chartSales"));
   sales.setOption({
     backgroundColor: "transparent",
-    tooltip: { trigger: "axis" },
+    tooltip: { trigger: "axis", valueFormatter: (v) => v + " 万" },
     legend: { data: ["硬件订货", "软件/订阅"], textStyle: { color: "#8aa0b8" } },
-    grid: { left: 40, right: 16, top: 32, bottom: 24 },
+    grid: { left: 48, right: 16, top: 32, bottom: 24 },
     xAxis: { type: "category", data: months, axisLine: { lineStyle: { color: "#335" } }, axisLabel: { color: "#8aa0b8" } },
-    yAxis: { type: "value", axisLabel: { color: "#8aa0b8" }, splitLine: { lineStyle: { color: "rgba(255,255,255,.06)" } } },
+    yAxis: { type: "value", name: "万元", nameTextStyle: { color: "#8aa0b8" }, axisLabel: { color: "#8aa0b8" }, splitLine: { lineStyle: { color: "rgba(255,255,255,.06)" } } },
     series: [
       { name: "硬件订货", type: "bar", data: hw, itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:"#20f0ff"},{offset:1,color:"#1a4cff"}]) } },
       { name: "软件/订阅", type: "line", data: sw, smooth: true, lineStyle: { color: "#ffb020", width: 3 }, areaStyle: { color: "rgba(255,176,32,.15)" } }
@@ -95,7 +95,7 @@ function renderDash() {
     "成都装配 · PLC-800 循环 0.8ms，IO-16 全点正常",
     "合肥锂电 · 震感 Pro 预警主轴 3# 频谱异常",
     "苏州仓 · 变频器 IGBT 低于安全库存，已生成采购申请",
-    "上海临港 · AGV H3 完成 126 次线边配送"
+    "南通仓储 · AGV H3 完成 26 次线边配送"
   ];
   const feed = $("#feed");
   feed.innerHTML = events.map((e, i) => `<div>${i === 0 ? "●" : "○"} ${e}</div>`).join("");
@@ -108,7 +108,7 @@ function renderProducts() {
       <div class="kpi"><div class="label">在售 SKU</div><div class="val">${PRODUCTS.length}</div><div class="delta">工联网 ${PRODUCTS.length - autoN} · 自动化 ${autoN}</div></div>
       <div class="kpi"><div class="label">目录均价</div><div class="val">${money(Math.round(PRODUCTS.reduce((s,p)=>s+p.price,0)/PRODUCTS.length))}</div><div class="delta">含 PLC / 变频器 / 伺服</div></div>
       <div class="kpi"><div class="label">可售库存</div><div class="val">${PRODUCTS.reduce((s,p)=>s+p.stock,0).toLocaleString()}</div><div class="delta">4 仓协同</div></div>
-      <div class="kpi"><div class="label">爆款</div><div class="val">G7 变频器</div><div class="delta">本周渠道加单 60 台</div></div>
+      <div class="kpi"><div class="label">爆款</div><div class="val">G7 变频器</div><div class="delta">本周渠道加单 8 台</div></div>
     </div>
     <div class="filters" id="prodFilters">
       <button class="on" data-cat="全部">全部</button>
@@ -142,7 +142,7 @@ function renderProducts() {
 function renderOrders() {
   $("#view-orders").innerHTML = `
     <div class="card" style="min-height:auto">
-      <h3>本周头部客户订单 · 工业互联网产品</h3>
+      <h3>本周客户订单 · 自动化设备与工联网</h3>
       <table>
         <thead><tr><th>订单号</th><th>客户</th><th>标的</th><th>金额</th><th>状态</th></tr></thead>
         <tbody>
@@ -156,7 +156,7 @@ function renderOrders() {
 function renderMes() {
   $("#view-mes").innerHTML = `
     <div class="kpis">
-      <div class="kpi"><div class="label">今日产出</div><div class="val">18,420 pcs</div><div class="delta">计划达成 104%</div></div>
+      <div class="kpi"><div class="label">今日产出</div><div class="val">1,260 pcs</div><div class="delta">计划达成 104%</div></div>
       <div class="kpi"><div class="label">直通率 FPY</div><div class="val">97.2%</div><div class="delta">AOI 拦截 38 件</div></div>
       <div class="kpi"><div class="label">平均节拍</div><div class="val">12.6 s</div><div class="delta">较上周 -0.8s</div></div>
       <div class="kpi"><div class="label">安灯呼叫</div><div class="val">6</div><div class="delta down">物料 4 · 质量 2</div></div>
@@ -199,9 +199,9 @@ function renderIot() {
 function renderStock() {
   $("#view-stock").innerHTML = `
     <div class="kpis">
-      <div class="kpi"><div class="label">存货总额</div><div class="val">¥ 3.75 亿</div><div class="delta">较上月 +4.2%</div></div>
-      <div class="kpi"><div class="label">SKU / 库位</div><div class="val">3,526</div><div class="delta">利用率 69%</div></div>
-      <div class="kpi"><div class="label">今日出入库</div><div class="val">186 单</div><div class="delta">入 74 · 出 112</div></div>
+      <div class="kpi"><div class="label">存货总额</div><div class="val">¥ 46.4 万</div><div class="delta">较上月 +4.2%</div></div>
+      <div class="kpi"><div class="label">SKU / 库位</div><div class="val">174</div><div class="delta">利用率 69%</div></div>
+      <div class="kpi"><div class="label">今日出入库</div><div class="val">18 单</div><div class="delta">入 7 · 出 11</div></div>
       <div class="kpi"><div class="label">缺料预警</div><div class="val">6</div><div class="delta down">IGBT / PLC 主板</div></div>
     </div>
     <div class="whs">
@@ -244,10 +244,10 @@ function renderStock() {
 function renderHr() {
   $("#view-hr").innerHTML = `
     <div class="kpis">
-      <div class="kpi"><div class="label">在册人数</div><div class="val">379</div><div class="delta">本月入职 6 · 离职 1</div></div>
-      <div class="kpi"><div class="label">今日出勤率</div><div class="val">95.2%</div><div class="delta">实到 361 人</div></div>
-      <div class="kpi"><div class="label">人均产值</div><div class="val">¥ 62.4 万</div><div class="delta">较去年 +11%</div></div>
-      <div class="kpi"><div class="label">招聘进行中</div><div class="val">14</div><div class="delta">PLC 工程师 4 · 伺服 2</div></div>
+      <div class="kpi"><div class="label">在册人数</div><div class="val">62</div><div class="delta">本月入职 2 · 离职 0</div></div>
+      <div class="kpi"><div class="label">今日出勤率</div><div class="val">93.5%</div><div class="delta">实到 58 人</div></div>
+      <div class="kpi"><div class="label">年人均产值</div><div class="val">¥ 28.6 万</div><div class="delta">较去年 +11%</div></div>
+      <div class="kpi"><div class="label">招聘进行中</div><div class="val">5</div><div class="delta">PLC 工程师 2 · 伺服 1</div></div>
     </div>
     <div class="kpis-6">
       ${HR_ATTEND.map((a) => `<div class="kpi"><div class="label">${a[0]}</div><div class="val">${a[1]}</div></div>`).join("")}
@@ -277,9 +277,9 @@ function renderHr() {
 }
 
 const titles = {
-  dash: "指挥舱 / 集团经营看板",
+  dash: "指挥舱 / 经营看板",
   products: "产品中心 / 自动化设备与工业互联网",
-  orders: "销售订单 / 头部客户合同",
+  orders: "销售订单 / 本周客户合同",
   mes: "智能制造 / MES 与产线节拍",
   iot: "设备物联 / PLC · 变频器 · 伺服孪生",
   stock: "库存管理 / 仓配一体",
@@ -328,7 +328,7 @@ show("dash");
 setInterval(() => {
   const el = $("#kpiGmv");
   if (!el) return;
-  const base = 368600 + Math.round(Math.random() * 24000);
+  const base = 86400 + Math.round(Math.random() * 18600);
   el.textContent = money(base);
 }, 2500);
 
