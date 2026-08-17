@@ -1,0 +1,4 @@
+{
+  "install": "bash rebuild-cloud/install.sh",
+  "start": "bash rebuild-cloud/start.sh"
+}
