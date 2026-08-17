@@ -6,6 +6,7 @@
 /crmeb/runtime/log
 /crmeb/runtime/session
 /crmeb/runtime/temp
+/crmeb/.env
 /crmeb/public/install.lock
 /crmeb/public/uploads
 /crmeb/runtime/timer.pid
