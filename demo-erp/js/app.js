@@ -59,12 +59,13 @@ function renderDash() {
       type: "pie", radius: ["46%", "70%"],
       label: { color: "#cfefff" },
       data: [
-        { value: 32, name: "边缘网关" },
-        { value: 18, name: "机器视觉" },
-        { value: 14, name: "传感器" },
-        { value: 12, name: "PLC/控制" },
-        { value: 11, name: "5G 模组" },
-        { value: 13, name: "软件订阅" }
+        { value: 22, name: "边缘网关" },
+        { value: 16, name: "PLC / IO" },
+        { value: 14, name: "变频器" },
+        { value: 12, name: "伺服 / HMI" },
+        { value: 12, name: "机器视觉" },
+        { value: 10, name: "传感器" },
+        { value: 14, name: "软件订阅" }
       ]
     }]
   });
@@ -89,40 +90,53 @@ function renderDash() {
     }]
   });
   const events = [
+    "宁波注塑 · 凌风 G7 变频器 3# 跟随 PLC 将转速降到 38Hz",
+    "深圳 SMT · 矩力伺服过载 108%，已自动限流并派电气工单",
+    "成都装配 · PLC-800 循环 0.8ms，IO-16 全点正常",
     "合肥锂电 · 震感 Pro 预警主轴 3# 频谱异常",
-    "上海临港 · AGV H3 完成 126 次线边配送",
-    "深圳宝安 · Eye 8K 检出 3 处焊点虚焊并闭环",
-    "苏州仓 · EdgeBox 9000 安全库存触发补货",
-    "青岛压铸 · 能效哨兵离线，运维工单已自动生成",
-    "宜宾基地 · 80 台网关完成 OTA 并恢复生产"
+    "苏州仓 · 变频器 IGBT 低于安全库存，已生成采购申请",
+    "上海临港 · AGV H3 完成 126 次线边配送"
   ];
   const feed = $("#feed");
   feed.innerHTML = events.map((e, i) => `<div>${i === 0 ? "●" : "○"} ${e}</div>`).join("");
 }
 
 function renderProducts() {
+  const autoN = PRODUCTS.filter((p) => p.cat === "自动化设备").length;
   $("#view-products").innerHTML = `
     <div class="kpis">
-      <div class="kpi"><div class="label">在售 SKU</div><div class="val">${PRODUCTS.length}</div><div class="delta">工业互联网硬件 + 软件</div></div>
-      <div class="kpi"><div class="label">目录均价</div><div class="val">${money(Math.round(PRODUCTS.reduce((s,p)=>s+p.price,0)/PRODUCTS.length))}</div><div class="delta">含订阅套件</div></div>
-      <div class="kpi"><div class="label">可售库存</div><div class="val">${PRODUCTS.reduce((s,p)=>s+p.stock,0).toLocaleString()}</div><div class="delta">3 仓协同</div></div>
-      <div class="kpi"><div class="label">爆款</div><div class="val">EdgeBox 9000</div><div class="delta">本周加单 160 台</div></div>
+      <div class="kpi"><div class="label">在售 SKU</div><div class="val">${PRODUCTS.length}</div><div class="delta">工联网 ${PRODUCTS.length - autoN} · 自动化 ${autoN}</div></div>
+      <div class="kpi"><div class="label">目录均价</div><div class="val">${money(Math.round(PRODUCTS.reduce((s,p)=>s+p.price,0)/PRODUCTS.length))}</div><div class="delta">含 PLC / 变频器 / 伺服</div></div>
+      <div class="kpi"><div class="label">可售库存</div><div class="val">${PRODUCTS.reduce((s,p)=>s+p.stock,0).toLocaleString()}</div><div class="delta">4 仓协同</div></div>
+      <div class="kpi"><div class="label">爆款</div><div class="val">G7 变频器</div><div class="delta">本周渠道加单 60 台</div></div>
     </div>
-    <div class="products">
-      ${PRODUCTS.map((p) => `
-        <article class="product">
-          <img src="${p.img}" alt="${p.name}" />
-          <div class="meta">
-            <h4>${p.name}</h4>
-            <div class="sku">SKU ${p.id}</div>
-            <p>${p.desc}</p>
-            <div class="tags">${p.tags.map((t) => `<span class="tag">${t}</span>`).join("")}</div>
-            <div class="price-row"><span class="price">${money(p.price)}</span><span class="stock">库存 ${p.stock}</span></div>
-          </div>
-        </article>
-      `).join("")}
+    <div class="filters" id="prodFilters">
+      <button class="on" data-cat="全部">全部</button>
+      <button data-cat="自动化设备">自动化设备</button>
+      <button data-cat="工业互联网">工业互联网</button>
     </div>
+    <div class="products" id="prodGrid"></div>
   `;
+  const paint = (cat) => {
+    const list = cat === "全部" ? PRODUCTS : PRODUCTS.filter((p) => p.cat === cat);
+    $("#prodGrid").innerHTML = list.map((p) => `
+      <article class="product">
+        <img src="${p.img}" alt="${p.name}" />
+        <div class="meta">
+          <h4>${p.name}</h4>
+          <div class="sku">SKU ${p.id} · ${p.cat}</div>
+          <p>${p.desc}</p>
+          <div class="tags">${p.tags.map((t) => `<span class="tag">${t}</span>`).join("")}</div>
+          <div class="price-row"><span class="price">${money(p.price)}</span><span class="stock">库存 ${p.stock}</span></div>
+        </div>
+      </article>
+    `).join("");
+  };
+  paint("全部");
+  $$("#prodFilters button").forEach((b) => b.addEventListener("click", () => {
+    $$("#prodFilters button").forEach((x) => x.classList.toggle("on", x === b));
+    paint(b.dataset.cat);
+  }));
 }
 
 function renderOrders() {
@@ -184,24 +198,78 @@ function renderIot() {
 
 function renderStock() {
   $("#view-stock").innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><div class="label">存货总额</div><div class="val">¥ 3.75 亿</div><div class="delta">较上月 +4.2%</div></div>
+      <div class="kpi"><div class="label">SKU / 库位</div><div class="val">3,526</div><div class="delta">利用率 69%</div></div>
+      <div class="kpi"><div class="label">今日出入库</div><div class="val">186 单</div><div class="delta">入 74 · 出 112</div></div>
+      <div class="kpi"><div class="label">缺料预警</div><div class="val">6</div><div class="delta down">IGBT / PLC 主板</div></div>
+    </div>
     <div class="whs">
       ${WAREHOUSES.map((w) => `
-        <div class="kpi" style="min-height:160px">
+        <div class="kpi" style="min-height:140px">
           <div class="label">${w.name}</div>
           <div class="val">${w.sku} SKU</div>
-          <div class="delta">存货 ${w.value} · 周转 ${w.turnover}</div>
+          <div class="delta">存货 ${w.value} · 周转 ${w.turnover} · 库容 ${w.cap}</div>
         </div>
       `).join("")}
     </div>
-    <div class="card" style="margin-top:14px;min-height:auto">
-      <h3>安全库存预警</h3>
+    <div class="card flat">
+      <h3>库存台账 · PLC / 变频器 / 伺服及关键料</h3>
       <table>
-        <thead><tr><th>物料</th><th>仓</th><th>现存量</th><th>安全库存</th><th>建议</th></tr></thead>
+        <thead><tr><th>物料</th><th>名称</th><th>分类</th><th>库位</th><th>现存量</th><th>安全库存</th><th>锁定</th><th>状态</th></tr></thead>
         <tbody>
-          <tr><td>EdgeBox 9000 主板</td><td>苏州</td><td>42</td><td>80</td><td><span class="badge warn">加急采购</span></td></tr>
-          <tr><td>Eye 8K CMOS</td><td>前海</td><td>18</td><td>30</td><td><span class="badge bad">缺料风险</span></td></tr>
-          <tr><td>5G 模组 M2</td><td>苏州</td><td>2100</td><td>800</td><td><span class="badge ok">充足</span></td></tr>
-          <tr><td>AGV 锂电池包</td><td>成都</td><td>9</td><td>12</td><td><span class="badge warn">调拨中</span></td></tr>
+          ${STOCK_ITEMS.map((r) => `<tr>
+            <td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td>
+            <td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td>
+            <td><span class="badge ${r[7]}">${r[7]==="ok"?"充足":r[7]==="warn"?"偏低":"缺料"}</span></td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+    <div class="card flat">
+      <h3>今日仓储作业单据</h3>
+      <table>
+        <thead><tr><th>单号</th><th>类型</th><th>往来</th><th>物料</th><th>仓</th><th>状态</th></tr></thead>
+        <tbody>
+          ${STOCK_DOCS.map((d) => `<tr>
+            <td>${d[0]}</td><td>${d[1]}</td><td>${d[2]}</td><td>${d[3]}</td><td>${d[4]}</td>
+            <td><span class="badge ${d[6]}">${d[5]}</span></td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderHr() {
+  $("#view-hr").innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><div class="label">在册人数</div><div class="val">379</div><div class="delta">本月入职 6 · 离职 1</div></div>
+      <div class="kpi"><div class="label">今日出勤率</div><div class="val">95.2%</div><div class="delta">实到 361 人</div></div>
+      <div class="kpi"><div class="label">人均产值</div><div class="val">¥ 62.4 万</div><div class="delta">较去年 +11%</div></div>
+      <div class="kpi"><div class="label">招聘进行中</div><div class="val">14</div><div class="delta">PLC 工程师 4 · 伺服 2</div></div>
+    </div>
+    <div class="kpis-6">
+      ${HR_ATTEND.map((a) => `<div class="kpi"><div class="label">${a[0]}</div><div class="val">${a[1]}</div></div>`).join("")}
+    </div>
+    <div class="whs" style="grid-template-columns:repeat(3,1fr)">
+      ${HR_DEPTS.map((d) => `
+        <div class="kpi" style="min-height:120px">
+          <div class="label">${d.city}</div>
+          <div class="val" style="font-size:20px">${d.name}</div>
+          <div class="delta">${d.people} 人 · 负责人 ${d.head}</div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="card flat">
+      <h3>关键岗位花名册 · 自动化与供应链</h3>
+      <table>
+        <thead><tr><th>工号</th><th>姓名</th><th>部门</th><th>岗位</th><th>职级</th><th>状态</th></tr></thead>
+        <tbody>
+          ${HR_STAFF.map((s) => `<tr>
+            <td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td>${s[3]}</td><td>${s[6]}</td>
+            <td><span class="badge ${s[5]}">${s[4]}</span></td>
+          </tr>`).join("")}
         </tbody>
       </table>
     </div>
@@ -210,14 +278,15 @@ function renderStock() {
 
 const titles = {
   dash: "指挥舱 / 集团经营看板",
-  products: "产品中心 / 工业互联网硬件与软件",
+  products: "产品中心 / 自动化设备与工业互联网",
   orders: "销售订单 / 头部客户合同",
   mes: "智能制造 / MES 与产线节拍",
-  iot: "设备物联 / 孪生与预警",
-  stock: "仓储库存 / 三仓协同"
+  iot: "设备物联 / PLC · 变频器 · 伺服孪生",
+  stock: "库存管理 / 仓配一体",
+  hr: "人力资源 / 组织 · 出勤 · 岗位"
 };
 
-const renderers = { dash: renderDash, products: renderProducts, orders: renderOrders, mes: renderMes, iot: renderIot, stock: renderStock };
+const renderers = { dash: renderDash, products: renderProducts, orders: renderOrders, mes: renderMes, iot: renderIot, stock: renderStock, hr: renderHr };
 
 function show(view) {
   $$(".view").forEach((v) => v.classList.remove("show"));
@@ -233,7 +302,7 @@ setInterval(() => { $("#clock").textContent = nowStr(); }, 1000);
 $("#clock").textContent = nowStr();
 
 let demoTimer = null;
-const demoOrder = ["dash", "products", "orders", "mes", "iot", "stock"];
+const demoOrder = ["dash", "products", "orders", "mes", "iot", "stock", "hr"];
 $("#btnDemo").addEventListener("click", () => {
   const btn = $("#btnDemo");
   if (demoTimer) {
