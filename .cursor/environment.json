@@ -5,7 +5,7 @@
   "terminals": [
     {
       "name": "php-server",
-      "command": "cd crmeb && php think run -H 0.0.0.0 -p 8000",
+      "command": "bash .cursor/run-server.sh",
       "description": "ThinkPHP built-in server for CRMEB storefront, admin, and APIs on port 8000"
     }
   ],
