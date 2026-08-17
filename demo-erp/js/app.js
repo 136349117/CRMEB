@@ -276,17 +276,162 @@ function renderHr() {
   `;
 }
 
+function renderEquip() {
+  const origin = ASSETS.reduce((s, a) => s + a[6], 0);
+  const using = ASSETS.filter((a) => a[4] === "在用").length;
+  const maintN = MAINT_WO.filter((w) => w[3] !== "已完成").length;
+  $("#view-equip").innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><div class="label">自有设备</div><div class="val">${ASSETS.length}</div><div class="delta">在用 ${using} · 客户在保 86 台</div></div>
+      <div class="kpi"><div class="label">设备原值</div><div class="val">${money(origin)}</div><div class="delta">净值约 ¥ 31.8 万</div></div>
+      <div class="kpi"><div class="label">本月维保</div><div class="val">${MAINT_WO.length}</div><div class="delta">未完成 ${maintN} 单 · 费用 ¥ 5,840</div></div>
+      <div class="kpi"><div class="label">今日到期</div><div class="val">1</div><div class="delta down">空压机 GA11 换油滤</div></div>
+    </div>
+    <div class="filters" id="assetFilters">
+      <button class="on" data-st="全部">全部</button>
+      <button data-st="在用">在用</button>
+      <button data-st="保养中">保养中</button>
+      <button data-st="外借">外借</button>
+      <button data-st="校准中">校准中</button>
+    </div>
+    <div class="card flat" style="margin-top:0">
+      <h3>固定资产台账 · 车间 / 仓储 / 实验室</h3>
+      <table>
+        <thead><tr><th>资产编号</th><th>名称</th><th>类别</th><th>位置</th><th>原值</th><th>启用</th><th>责任人</th><th>下次保养</th><th>状态</th></tr></thead>
+        <tbody id="assetBody"></tbody>
+      </table>
+    </div>
+    <div class="card flat">
+      <h3>维保工单</h3>
+      <table>
+        <thead><tr><th>单号</th><th>作业</th><th>地点</th><th>费用</th><th>执行人</th><th>状态</th></tr></thead>
+        <tbody>
+          ${MAINT_WO.map((w) => `<tr>
+            <td>${w[0]}</td><td>${w[1]}</td><td>${w[2]}</td><td>${money(w[5])}</td><td>${w[6]}</td>
+            <td><span class="badge ${w[4]}">${w[3]}</span></td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const paint = (st) => {
+    const list = st === "全部" ? ASSETS : ASSETS.filter((a) => a[4] === st);
+    $("#assetBody").innerHTML = list.map((a) => `<tr>
+      <td>${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td>
+      <td>${money(a[6])}</td><td>${a[7]}</td><td>${a[8]}</td><td>${a[9]}</td>
+      <td><span class="badge ${a[5]}">${a[4]}</span></td>
+    </tr>`).join("");
+  };
+  paint("全部");
+  $$("#assetFilters button").forEach((b) => b.addEventListener("click", () => {
+    $$("#assetFilters button").forEach((x) => x.classList.toggle("on", x === b));
+    paint(b.dataset.st);
+  }));
+}
+
+function renderArchive() {
+  const total = ARCH_CATS.reduce((s, c) => s + c.n, 0);
+  $("#view-archive").innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><div class="label">在档文件</div><div class="val">${total}</div><div class="delta">电子化 78% · 纸质柜 2 列</div></div>
+      <div class="kpi"><div class="label">本月新增</div><div class="val">12</div><div class="delta">合同 6 · 图纸 4 · 证书 2</div></div>
+      <div class="kpi"><div class="label">待归档 / 待修订</div><div class="val">4</div><div class="delta down">南通合同待盖章</div></div>
+      <div class="kpi"><div class="label">受控图纸</div><div class="val">12</div><div class="delta">PLC / 变频器柜体</div></div>
+    </div>
+    <div class="whs" style="grid-template-columns:repeat(6,1fr);margin-bottom:14px">
+      ${ARCH_CATS.map((c) => `
+        <div class="kpi" style="min-height:110px">
+          <div class="label">${c.name}</div>
+          <div class="val" style="font-size:24px">${c.n}</div>
+          <div class="delta">${c.hint}</div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="card flat" style="margin-top:0">
+      <h3>最近档案 · 合同 / 图纸 / 证书 / 人事</h3>
+      <table>
+        <thead><tr><th>档号</th><th>类型</th><th>标题</th><th>责任人</th><th>金额 / 备注</th><th>日期</th><th>状态</th></tr></thead>
+        <tbody>
+          ${ARCHIVES.map((a) => `<tr>
+            <td>${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td>
+            <td>${a[6]}</td><td>${a[7]}</td>
+            <td><span class="badge ${a[5]}">${a[4]}</span></td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderFinance() {
+  $("#view-finance").innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><div class="label">账面资金</div><div class="val">¥ 32.8 万</div><div class="delta">工行基本户 + 支付宝</div></div>
+      <div class="kpi"><div class="label">本月回款</div><div class="val">¥ 19.2 万</div><div class="delta">较上月 +8.4%</div></div>
+      <div class="kpi"><div class="label">应收账款</div><div class="val">¥ 24.6 万</div><div class="delta down">南通 AGV 待回款</div></div>
+      <div class="kpi"><div class="label">本月利润</div><div class="val">¥ 8.4 万</div><div class="delta">收入 36.8 万 · 成本 28.4 万</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h3>近 12 个月 · 收入 / 成本（万元）</h3><div id="chartFin" class="chart"></div></div>
+      <div class="card"><h3>应收账龄</h3><div id="chartAging" class="chart"></div></div>
+    </div>
+    <div class="card flat">
+      <h3>本月凭证 · 收付款与开票</h3>
+      <table>
+        <thead><tr><th>凭证号</th><th>类型</th><th>往来</th><th>金额</th><th>状态</th></tr></thead>
+        <tbody>
+          ${FIN_VOUCHERS.map((v) => `<tr>
+            <td>${v[0]}</td><td>${v[1]}</td><td>${v[2]}</td><td>${money(v[3])}</td>
+            <td><span class="badge ${v[5]}">${v[4]}</span></td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const months = ["9月","10月","11月","12月","1月","2月","3月","4月","5月","6月","7月","8月"];
+  const inc = [16, 18, 21, 32, 14, 12, 22, 24, 28, 31, 34, 36.8];
+  const cost = [12, 14, 16, 22, 11, 10, 16, 18, 20, 22, 24, 28.4];
+  echarts.init($("#chartFin")).setOption({
+    backgroundColor: "transparent",
+    tooltip: { trigger: "axis", valueFormatter: (v) => v + " 万" },
+    legend: { data: ["收入", "成本"], textStyle: { color: "#8aa0b8" } },
+    grid: { left: 48, right: 16, top: 32, bottom: 24 },
+    xAxis: { type: "category", data: months, axisLine: { lineStyle: { color: "#335" } }, axisLabel: { color: "#8aa0b8" } },
+    yAxis: { type: "value", name: "万元", nameTextStyle: { color: "#8aa0b8" }, axisLabel: { color: "#8aa0b8" }, splitLine: { lineStyle: { color: "rgba(255,255,255,.06)" } } },
+    series: [
+      { name: "收入", type: "bar", data: inc, itemStyle: { color: "#20f0ff" } },
+      { name: "成本", type: "line", data: cost, smooth: true, lineStyle: { color: "#ffb020", width: 3 } }
+    ]
+  });
+  echarts.init($("#chartAging")).setOption({
+    backgroundColor: "transparent",
+    tooltip: { trigger: "item", formatter: "{b}: {c} 万" },
+    series: [{
+      type: "pie", radius: ["46%", "70%"],
+      label: { color: "#cfefff" },
+      data: FIN_AGING.map((a) => ({ value: a.value, name: a.name }))
+    }]
+  });
+}
+
 const titles = {
   dash: "指挥舱 / 经营看板",
   products: "产品中心 / 自动化设备与工业互联网",
   orders: "销售订单 / 本周客户合同",
   mes: "智能制造 / MES 与产线节拍",
   iot: "设备物联 / PLC · 变频器 · 伺服孪生",
+  equip: "设备管理 / 固定资产与维保",
   stock: "库存管理 / 仓配一体",
+  archive: "档案管理 / 合同 · 图纸 · 证书",
+  finance: "财务管理 / 资金 · 应收 · 凭证",
   hr: "人力资源 / 组织 · 出勤 · 岗位"
 };
 
-const renderers = { dash: renderDash, products: renderProducts, orders: renderOrders, mes: renderMes, iot: renderIot, stock: renderStock, hr: renderHr };
+const renderers = {
+  dash: renderDash, products: renderProducts, orders: renderOrders, mes: renderMes,
+  iot: renderIot, equip: renderEquip, stock: renderStock, archive: renderArchive,
+  finance: renderFinance, hr: renderHr
+};
 
 function show(view) {
   $$(".view").forEach((v) => v.classList.remove("show"));
@@ -302,7 +447,7 @@ setInterval(() => { $("#clock").textContent = nowStr(); }, 1000);
 $("#clock").textContent = nowStr();
 
 let demoTimer = null;
-const demoOrder = ["dash", "products", "orders", "mes", "iot", "stock", "hr"];
+const demoOrder = ["dash", "products", "orders", "mes", "iot", "equip", "stock", "archive", "finance", "hr"];
 $("#btnDemo").addEventListener("click", () => {
   const btn = $("#btnDemo");
   if (demoTimer) {
