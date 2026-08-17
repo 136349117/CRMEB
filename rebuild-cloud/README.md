@@ -26,4 +26,6 @@ export DOCKER_HOST=tcp://127.0.0.1:2375
 docker compose -f rebuild-cloud/docker-compose.yml down
 ```
 
-新的 Cloud Agent 会通过 `.cursor/environment.json` 的 `install` / `start` 自动拉镜像并启动。
+新的 Cloud Agent 会通过 `.cursor/environment.json` 的 `install` / `start` 自动拉镜像并启动，并把 **18080** 声明为转发端口。
+
+当前这次已经在跑的 Agent **不会**自动补上端口转发。要用本机 `http://localhost:18080/` 预览，请用包含本配置的分支**新开一个 Cloud Agent**。

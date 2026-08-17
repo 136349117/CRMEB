@@ -3,10 +3,14 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-export DOCKER_HOST="${DOCKER_HOST:-tcp://127.0.0.1:2375}"
 
 if ! command -v docker >/dev/null 2>&1; then
   bash "$ROOT/install.sh"
+fi
+
+sudo service docker start >/dev/null 2>&1 || true
+if ! docker info >/dev/null 2>&1; then
+  export DOCKER_HOST="${DOCKER_HOST:-tcp://127.0.0.1:2375}"
 fi
 
 docker compose -f "$ROOT/docker-compose.yml" up -d
