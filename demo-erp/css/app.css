@@ -198,6 +198,8 @@ th { color: var(--muted); font-weight: 500; }
 .hidden { display: none; }
 
 /* —— 工业互联网中控大屏 —— */
+body.wall-mode .sider,
+body.wall-mode .topbar { display: none; }
 body.wall-mode .rec-badge { top: 14px; left: 16px; right: auto; }
 body.wall-mode .stage { margin-left: 0; }
 body.wall-mode #view-wall.show {
