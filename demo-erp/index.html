@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>星枢智造 · 工业互联网 ERP 指挥舱</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <aside class="sider">
+    <div class="brand">
+      <img src="img/logo-staraxis.jpg" alt="星枢智造" />
+      <div>
+        <strong>星枢智造</strong>
+        <span>STARAXIS IIoT ERP</span>
+      </div>
+    </div>
+    <nav id="nav">
+      <button data-view="dash" class="active">指挥舱</button>
+      <button data-view="products">产品中心</button>
+      <button data-view="orders">销售订单</button>
+      <button data-view="mes">智能制造</button>
+      <button data-view="iot">设备物联</button>
+      <button data-view="stock">仓储库存</button>
+    </nav>
+    <div class="sider-foot">
+      <div class="pulse-dot"></div>
+      产线实时在线 · 华东一号集群
+    </div>
+  </aside>
+
+  <main class="stage">
+    <header class="topbar">
+      <div class="crumb" id="crumb">指挥舱 / 集团经营看板</div>
+      <div class="top-actions">
+        <div class="clock" id="clock"></div>
+        <button id="btnDemo" class="btn-demo">▶ 自动巡航（录屏）</button>
+        <div class="avatar">导演模式</div>
+      </div>
+    </header>
+
+    <section id="view-dash" class="view show"></section>
+    <section id="view-products" class="view"></section>
+    <section id="view-orders" class="view"></section>
+    <section id="view-mes" class="view"></section>
+    <section id="view-iot" class="view"></section>
+    <section id="view-stock" class="view"></section>
+  </main>
+
+  <div id="recBadge" class="rec-badge hidden">REC 演示巡航中</div>
+
+  <script src="js/echarts.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
