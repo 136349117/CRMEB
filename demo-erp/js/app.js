@@ -101,6 +101,217 @@ function renderDash() {
   feed.innerHTML = events.map((e, i) => `<div>${i === 0 ? "●" : "○"} ${e}</div>`).join("");
 }
 
+function wallTwinSvg() {
+  return `
+    <svg class="twin-svg" viewBox="0 0 920 500" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="wallGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="2.4" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="zoneFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#20f0ff" stop-opacity=".10"/>
+          <stop offset="100%" stop-color="#1a4cff" stop-opacity=".03"/>
+        </linearGradient>
+      </defs>
+      <rect x="18" y="16" width="884" height="468" rx="6" fill="rgba(4,12,24,.35)" stroke="rgba(32,240,255,.2)"/>
+      <g fill="none" stroke="rgba(32,240,255,.08)" stroke-width="1">
+        ${Array.from({ length: 9 }, (_, i) => `<line x1="40" y1="${60 + i * 44}" x2="880" y2="${60 + i * 44}"/>`).join("")}
+      </g>
+      <rect x="48" y="48" width="250" height="170" rx="4" fill="url(#zoneFill)" stroke="rgba(32,240,255,.35)"/>
+      <rect x="335" y="48" width="250" height="170" rx="4" fill="url(#zoneFill)" stroke="rgba(32,240,255,.35)"/>
+      <rect x="622" y="48" width="250" height="170" rx="4" fill="url(#zoneFill)" stroke="rgba(32,240,255,.35)"/>
+      <rect x="48" y="268" width="394" height="176" rx="4" fill="url(#zoneFill)" stroke="rgba(32,240,255,.28)"/>
+      <rect x="478" y="268" width="394" height="176" rx="4" fill="url(#zoneFill)" stroke="rgba(32,240,255,.28)"/>
+      <text x="60" y="70" fill="#8aa0b8" font-size="12" letter-spacing="2">宁波 · 注塑单元</text>
+      <text x="347" y="70" fill="#8aa0b8" font-size="12" letter-spacing="2">苏州 · 机加单元</text>
+      <text x="634" y="70" fill="#8aa0b8" font-size="12" letter-spacing="2">检测 / AOI</text>
+      <text x="60" y="290" fill="#8aa0b8" font-size="12" letter-spacing="2">仓储 · AGV</text>
+      <text x="490" y="290" fill="#8aa0b8" font-size="12" letter-spacing="2">边缘中枢 · MES</text>
+      <g filter="url(#wallGlow)">
+        <circle cx="110" cy="140" r="16" fill="#041820" stroke="#20f0ff" stroke-width="2"/>
+        <circle cx="210" cy="140" r="16" fill="#041820" stroke="#3dff9a" stroke-width="2"/>
+        <circle cx="160" cy="175" r="12" fill="#041820" stroke="#20f0ff" stroke-width="1.5"/>
+        <circle cx="410" cy="130" r="16" fill="#041820" stroke="#20f0ff" stroke-width="2"/>
+        <circle cx="510" cy="155" r="16" fill="#041820" stroke="#ffb020" stroke-width="2"/>
+        <circle cx="700" cy="130" r="16" fill="#041820" stroke="#20f0ff" stroke-width="2"/>
+        <circle cx="800" cy="165" r="16" fill="#041820" stroke="#20f0ff" stroke-width="2"/>
+        <circle cx="160" cy="360" r="16" fill="#041820" stroke="#20f0ff" stroke-width="2"/>
+        <circle cx="300" cy="380" r="16" fill="#041820" stroke="#3dff9a" stroke-width="2"/>
+        <circle cx="620" cy="355" r="22" fill="#041820" stroke="#20f0ff" stroke-width="2.4"/>
+        <circle cx="760" cy="380" r="16" fill="#041820" stroke="#6b8cff" stroke-width="2"/>
+      </g>
+      <g fill="#cfefff" font-size="11" text-anchor="middle">
+        <text x="110" y="144">PLC</text>
+        <text x="210" y="144">VFD</text>
+        <text x="160" y="179" font-size="9">IO</text>
+        <text x="410" y="134">CNC</text>
+        <text x="510" y="159">伺服</text>
+        <text x="700" y="134">相机</text>
+        <text x="800" y="169">HMI</text>
+        <text x="160" y="364">AGV</text>
+        <text x="300" y="384">WMS</text>
+        <text x="620" y="360">网关</text>
+        <text x="760" y="384">MES</text>
+      </g>
+      <path class="flow" d="M126 140 H194"/>
+      <path class="flow" d="M210 156 C 210 230, 160 230, 160 344"/>
+      <path class="flow amber" d="M426 130 H494"/>
+      <path class="flow" d="M716 130 H784"/>
+      <path class="flow" d="M226 140 C 320 140, 320 355, 598 355"/>
+      <path class="flow" d="M526 155 C 560 155, 560 355, 598 355"/>
+      <path class="flow" d="M642 355 H744"/>
+      <path class="flow amber" d="M316 380 C 420 380, 500 380, 598 365"/>
+      <circle r="3.2" class="pkt" fill="#20f0ff">
+        <animateMotion dur="3.2s" repeatCount="indefinite" path="M210 156 C 210 230, 160 230, 160 344"/>
+      </circle>
+      <circle r="3.2" fill="#ffb020">
+        <animateMotion dur="4.1s" repeatCount="indefinite" path="M226 140 C 320 140, 320 355, 598 355"/>
+      </circle>
+      <circle r="3.2" fill="#3dff9a">
+        <animateMotion dur="3.6s" repeatCount="indefinite" path="M316 380 C 420 380, 500 380, 598 365"/>
+      </circle>
+    </svg>
+  `;
+}
+
+let wallLive = null;
+let wallCharts = [];
+
+function stopWallLive() {
+  if (wallLive) {
+    clearInterval(wallLive);
+    wallLive = null;
+  }
+  wallCharts.forEach((c) => {
+    try { c.dispose(); } catch (e) { /* ignore */ }
+  });
+  wallCharts = [];
+}
+
+function renderWall() {
+  stopWallLive();
+  const mixN = WALL_MIX.reduce((s, m) => s + m.n, 0);
+  $("#view-wall").innerHTML = `
+    <div class="wall">
+      <div class="wall-scan"></div>
+      <header class="wall-hd">
+        <div class="wall-hd-side">
+          <button class="wall-back" id="wallBack">返回系统</button>
+          <span>IIoT OS · 苏州总部</span>
+        </div>
+        <h1>码农老赵 · 工业互联网中控中心</h1>
+        <div class="wall-hd-side right"><span id="wallClock">${nowStr()}</span></div>
+      </header>
+      <div class="wall-kpis">
+        <div class="wall-kpi"><div class="k">接入现场</div><div class="v">18 <span class="u">家</span></div></div>
+        <div class="wall-kpi"><div class="k">在管设备</div><div class="v">${mixN} <span class="u">台</span></div></div>
+        <div class="wall-kpi"><div class="k">在线率</div><div class="v" id="wallOnline">97.8<span class="u">%</span></div></div>
+        <div class="wall-kpi"><div class="k">今日产量</div><div class="v" id="wallPcs">1,260 <span class="u">pcs</span></div></div>
+        <div class="wall-kpi"><div class="k">今日产值</div><div class="v" id="wallGmv">¥ 8.64 <span class="u">万</span></div></div>
+        <div class="wall-kpi"><div class="k">综合 OEE</div><div class="v">89.4<span class="u">%</span></div></div>
+      </div>
+      <div class="wall-body">
+        <div class="wall-col">
+          <div class="wall-panel">
+            <h3>设备构成 · 86 台在管</h3>
+            ${WALL_MIX.map((m) => `<div class="mix-row"><span>${m.name}</span><div class="mix-bar"><i style="width:${m.pct}%"></i></div><span class="n">${m.n}</span></div>`).join("")}
+          </div>
+          <div class="wall-panel">
+            <h3>24 小时产量</h3>
+            <div id="chartWallPcs" class="wall-chart"></div>
+          </div>
+        </div>
+        <div class="wall-mid">
+          <div class="wall-panel wall-twin">
+            <h3>数字车间拓扑 · OPC UA / EtherCAT / 5G</h3>
+            ${wallTwinSvg()}
+          </div>
+          <div class="wall-sites">
+            ${WALL_SITES.map((s) => `
+              <div class="wall-site">
+                <div class="n"><i class="dot ${s.st}"></i>${s.name}</div>
+                <div class="r">${s.role}</div>
+                <div class="c">${s.n} 台接入</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+        <div class="wall-col">
+          <div class="wall-panel">
+            <h3>质量 · 稼动雷达</h3>
+            <div id="chartWallRadar" class="wall-chart"></div>
+          </div>
+          <div class="wall-panel">
+            <h3>实时告警</h3>
+            <div class="wall-alarms" id="wallAlarms">
+              ${WALL_ALARMS.map((a) => `<div class="row ${a[3]}"><span>${a[0]}</span><span>${a[1]}</span><span>${a[2]}</span></div>`).join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wall-ticker">
+        <div class="tag">LIVE</div>
+        <div class="run">${WALL_TICKER.concat(WALL_TICKER).map((t) => `◆ ${t}`).join("　　")}</div>
+      </div>
+    </div>
+  `;
+  $("#wallBack").addEventListener("click", () => show("dash"));
+  const hours = Array.from({ length: 12 }, (_, i) => `${String((i * 2)).padStart(2, "0")}:00`);
+  const pcs = [42, 38, 28, 22, 48, 86, 92, 88, 76, 81, 74, 68];
+  const c1 = echarts.init($("#chartWallPcs"));
+  c1.setOption({
+    backgroundColor: "transparent",
+    grid: { left: 36, right: 10, top: 16, bottom: 22 },
+    tooltip: { trigger: "axis" },
+    xAxis: { type: "category", data: hours, axisLabel: { color: "#8aa0b8", fontSize: 10 }, axisLine: { lineStyle: { color: "#335" } } },
+    yAxis: { type: "value", splitLine: { lineStyle: { color: "rgba(255,255,255,.06)" } }, axisLabel: { color: "#8aa0b8", fontSize: 10 } },
+    series: [{
+      type: "line", data: pcs, smooth: true, symbol: "none",
+      lineStyle: { color: "#20f0ff", width: 2 },
+      areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: "rgba(32,240,255,.35)" }, { offset: 1, color: "rgba(32,240,255,0)" }]) }
+    }]
+  });
+  const c2 = echarts.init($("#chartWallRadar"));
+  c2.setOption({
+    backgroundColor: "transparent",
+    radar: {
+      indicator: [
+        { name: "稼动", max: 100 },
+        { name: "直通", max: 100 },
+        { name: "准交", max: 100 },
+        { name: "能耗", max: 100 },
+        { name: "安全", max: 100 }
+      ],
+      splitLine: { lineStyle: { color: "rgba(32,240,255,.2)" } },
+      splitArea: { areaStyle: { color: ["rgba(32,240,255,.04)", "rgba(32,240,255,.01)"] } },
+      axisName: { color: "#8aa0b8", fontSize: 11 },
+      axisLine: { lineStyle: { color: "rgba(32,240,255,.25)" } }
+    },
+    series: [{
+      type: "radar",
+      data: [{ value: [89, 97, 96, 84, 99], name: "今日" }],
+      lineStyle: { color: "#20f0ff" },
+      areaStyle: { color: "rgba(32,240,255,.22)" },
+      itemStyle: { color: "#20f0ff" }
+    }]
+  });
+  wallCharts = [c1, c2];
+  requestAnimationFrame(() => wallCharts.forEach((c) => c.resize()));
+  wallLive = setInterval(() => {
+    const online = (97.4 + Math.random() * 0.8).toFixed(1);
+    const pcsNow = 1260 + Math.round(Math.random() * 18);
+    const gmv = (8.42 + Math.random() * 0.46).toFixed(2);
+    const elO = $("#wallOnline");
+    const elP = $("#wallPcs");
+    const elG = $("#wallGmv");
+    if (!elO) return;
+    elO.innerHTML = `${online}<span class="u">%</span>`;
+    elP.innerHTML = `${pcsNow.toLocaleString("zh-CN")} <span class="u">pcs</span>`;
+    elG.innerHTML = `¥ ${gmv} <span class="u">万</span>`;
+  }, 1800);
+}
+
 function renderProducts() {
   const autoN = PRODUCTS.filter((p) => p.cat === "自动化设备").length;
   $("#view-products").innerHTML = `
@@ -415,6 +626,7 @@ function renderFinance() {
 }
 
 const titles = {
+  wall: "中控大屏 / 工业互联网",
   dash: "指挥舱 / 经营看板",
   products: "产品中心 / 自动化设备与工业互联网",
   orders: "销售订单 / 本周客户合同",
@@ -428,12 +640,14 @@ const titles = {
 };
 
 const renderers = {
-  dash: renderDash, products: renderProducts, orders: renderOrders, mes: renderMes,
+  wall: renderWall, dash: renderDash, products: renderProducts, orders: renderOrders, mes: renderMes,
   iot: renderIot, equip: renderEquip, stock: renderStock, archive: renderArchive,
   finance: renderFinance, hr: renderHr
 };
 
 function show(view) {
+  stopWallLive();
+  document.body.classList.toggle("wall-mode", view === "wall");
   $$(".view").forEach((v) => v.classList.remove("show"));
   $(`#view-${view}`).classList.add("show");
   $$("#nav button").forEach((b) => b.classList.toggle("active", b.dataset.view === view));
@@ -443,11 +657,17 @@ function show(view) {
 
 $$("#nav button").forEach((b) => b.addEventListener("click", () => show(b.dataset.view)));
 
-setInterval(() => { $("#clock").textContent = nowStr(); }, 1000);
+setInterval(() => {
+  const t = nowStr();
+  const c = $("#clock");
+  if (c) c.textContent = t;
+  const w = $("#wallClock");
+  if (w) w.textContent = t;
+}, 1000);
 $("#clock").textContent = nowStr();
 
 let demoTimer = null;
-const demoOrder = ["dash", "products", "orders", "mes", "iot", "equip", "stock", "archive", "finance", "hr"];
+const demoOrder = ["wall", "dash", "products", "orders", "mes", "iot", "equip", "stock", "archive", "finance", "hr"];
 $("#btnDemo").addEventListener("click", () => {
   const btn = $("#btnDemo");
   if (demoTimer) {
@@ -469,7 +689,10 @@ $("#btnDemo").addEventListener("click", () => {
   }, 3500);
 });
 
-show("dash");
+show("wall");
+window.addEventListener("resize", () => {
+  wallCharts.forEach((c) => { try { c.resize(); } catch (e) { /* ignore */ } });
+});
 setInterval(() => {
   const el = $("#kpiGmv");
   if (!el) return;

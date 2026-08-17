@@ -19,7 +19,8 @@
       </div>
     </div>
     <nav id="nav">
-      <button data-view="dash" class="active">指挥舱</button>
+      <button data-view="wall" class="active">中控大屏</button>
+      <button data-view="dash">指挥舱</button>
       <button data-view="products">产品中心</button>
       <button data-view="orders">销售订单</button>
       <button data-view="mes">智能制造</button>
@@ -38,7 +39,7 @@
 
   <main class="stage">
     <header class="topbar">
-      <div class="crumb" id="crumb">指挥舱 / 经营看板</div>
+      <div class="crumb" id="crumb">中控大屏 / 工业互联网</div>
       <div class="top-actions">
         <div class="clock" id="clock"></div>
         <button id="btnDemo" class="btn-demo">▶ 自动巡航（录屏）</button>
@@ -46,7 +47,8 @@
       </div>
     </header>
 
-    <section id="view-dash" class="view show"></section>
+    <section id="view-wall" class="view show"></section>
+    <section id="view-dash" class="view"></section>
     <section id="view-products" class="view"></section>
     <section id="view-orders" class="view"></section>
     <section id="view-mes" class="view"></section>
