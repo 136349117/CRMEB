@@ -7,13 +7,16 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import foundryScene from '../data/aluminum-foundry-scene.json'
+import { DEFAULT_SCENE_ID, getPreset, SCENE_PRESETS } from '../data/sceneCatalog'
 import { bindEntityMetrics, deriveStatus, sampleTelemetry } from '../data/mockTelemetry'
 import type { EntityRuntime, TwinEntity, TwinScene } from '../data/types'
 
 interface TwinContextValue {
   scene: TwinScene
   setScene: (scene: TwinScene) => void
+  presetId: string | null
+  loadPreset: (id: string) => void
+  presets: typeof SCENE_PRESETS
   entities: TwinEntity[]
   runtime: Record<string, EntityRuntime>
   selectedId: string | null
@@ -24,10 +27,36 @@ interface TwinContextValue {
 
 const TwinContext = createContext<TwinContextValue | null>(null)
 
+function defaultSelection(scene: TwinScene): string | null {
+  return (
+    scene.entities.find((e) => e.id === 'dev-hall-front')?.id ??
+    scene.entities.find((e) => e.kind === 'device')?.id ??
+    scene.entities[0]?.id ??
+    null
+  )
+}
+
 export function TwinProvider({ children }: { children: ReactNode }) {
-  const [scene, setScene] = useState<TwinScene>(foundryScene as TwinScene)
-  const [selectedId, setSelectedId] = useState<string | null>('dev-furnace-01')
+  const initial = getPreset(DEFAULT_SCENE_ID)!.scene
+  const [scene, setSceneState] = useState<TwinScene>(initial)
+  const [presetId, setPresetId] = useState<string | null>(DEFAULT_SCENE_ID)
+  const [selectedId, setSelectedId] = useState<string | null>(defaultSelection(initial))
   const [runtime, setRuntime] = useState<Record<string, EntityRuntime>>({})
+
+  const setScene = useCallback((next: TwinScene) => {
+    setSceneState(next)
+    setPresetId(SCENE_PRESETS.some((p) => p.id === next.id) ? next.id : null)
+    setSelectedId(defaultSelection(next))
+  }, [])
+
+  const loadPreset = useCallback(
+    (id: string) => {
+      const preset = getPreset(id)
+      if (!preset) return
+      setScene(preset.scene)
+    },
+    [setScene],
+  )
 
   useEffect(() => {
     const tick = () => {
@@ -65,6 +94,9 @@ export function TwinProvider({ children }: { children: ReactNode }) {
     () => ({
       scene,
       setScene,
+      presetId,
+      loadPreset,
+      presets: SCENE_PRESETS,
       entities: scene.entities,
       runtime,
       selectedId,
@@ -72,7 +104,7 @@ export function TwinProvider({ children }: { children: ReactNode }) {
       childrenOf,
       getEntity,
     }),
-    [scene, runtime, selectedId, childrenOf, getEntity],
+    [scene, setScene, presetId, loadPreset, runtime, selectedId, childrenOf, getEntity],
   )
 
   return <TwinContext.Provider value={value}>{children}</TwinContext.Provider>

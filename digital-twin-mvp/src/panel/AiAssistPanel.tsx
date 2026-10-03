@@ -6,7 +6,7 @@ import { useTwin } from '../twin/TwinContext'
 export function AiAssistPanel() {
   const { setScene, setSelectedId } = useTwin()
   const [prompt, setPrompt] = useState(
-    '铝铸造小车间：铝锭区、一台熔炼炉、浇铸模具台、冷却架和一条安全通道',
+    '中铝风格厂区：中央道路、左侧蓝塔架和白筒仓、右侧长条蓝厂房和红白烟囱',
   )
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)

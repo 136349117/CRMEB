@@ -1,5 +1,6 @@
 import { AiAssistPanel } from './panel/AiAssistPanel'
 import { HierarchyPanel } from './panel/HierarchyPanel'
+import { SceneSwitcher } from './panel/SceneSwitcher'
 import { TelemetryPanel } from './panel/TelemetryPanel'
 import { SceneCanvas } from './scene/SceneCanvas'
 import { TwinProvider } from './twin/TwinContext'
@@ -14,17 +15,18 @@ export default function App() {
               Twin<span>Forge</span>
             </h1>
             <p className="tagline">
-              铝加工铸造车间示意：原料铝锭 → 熔炼 → 浇铸/模具 → 冷却，含行车与安全通道。几何占位 + 模拟遥测。
+              中铝厂区航拍示意（gpt-6-astra 读图生成）· 可切换铝铸造车间。简化几何 + 模拟遥测，非精确 BIM。
             </p>
           </div>
           <div className="header-meta">
             Vite · React · R3F
             <br />
-            数据：mock → 可接传感器 / BIM
+            模型：gpt-6-astra
           </div>
         </header>
         <main className="app-main">
           <aside className="side-left">
+            <SceneSwitcher />
             <HierarchyPanel />
           </aside>
           <div className="canvas-wrap">

@@ -1,0 +1,297 @@
+{
+  "id": "chalco-plant",
+  "name": "中铝厂区示意",
+  "description": "由 gpt-6-astra 读图（厂区航拍）生成并微调的简化几何示意，非精确 BIM。可见中央道路、左侧蓝塔架/白筒仓、右侧长条蓝厂房（CHALCO）、红白烟囱、停车场与背景矿山。",
+  "resources": [
+    {
+      "id": "ref-aerial",
+      "type": "other",
+      "uri": "/cursor/stores/self/media/chalco-plant/reference.png",
+      "note": "航拍参考图（Agent Store）；运行时不加载，仅作溯源"
+    }
+  ],
+  "camera": {
+    "position": { "x": 42, "y": 28, "z": 36 },
+    "target": { "x": 0, "y": 2, "z": -2 }
+  },
+  "entities": [
+    {
+      "id": "space-plant",
+      "name": "中铝厂区",
+      "kind": "space",
+      "parentId": null,
+      "mesh": {
+        "type": "plane",
+        "size": { "x": 70, "y": 1, "z": 48 },
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "color": "#7d8670"
+      }
+    },
+    {
+      "id": "space-road",
+      "name": "中央道路",
+      "kind": "space",
+      "parentId": "space-plant",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 5, "y": 0.08, "z": 44 },
+        "position": { "x": -2, "y": 0.04, "z": 0 },
+        "color": "#5c646c"
+      }
+    },
+    {
+      "id": "space-tower",
+      "name": "塔架 / 工艺区",
+      "kind": "space",
+      "parentId": "space-plant",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 16, "y": 0.06, "z": 14 },
+        "position": { "x": -18, "y": 0.03, "z": -5 },
+        "color": "#4a5560"
+      }
+    },
+    {
+      "id": "space-silo",
+      "name": "原料 / 筒仓区",
+      "kind": "space",
+      "parentId": "space-plant",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 10, "y": 0.06, "z": 8 },
+        "position": { "x": -24, "y": 0.03, "z": -12 },
+        "color": "#525c66"
+      }
+    },
+    {
+      "id": "space-hall",
+      "name": "电解 / 冶炼厂房区",
+      "kind": "space",
+      "parentId": "space-plant",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 30, "y": 0.06, "z": 18 },
+        "position": { "x": 14, "y": 0.03, "z": -8 },
+        "color": "#46505a"
+      }
+    },
+    {
+      "id": "space-parking",
+      "name": "停车场",
+      "kind": "space",
+      "parentId": "space-plant",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 8, "y": 0.08, "z": 12 },
+        "position": { "x": 5, "y": 0.04, "z": 9 },
+        "color": "#a8adb2"
+      }
+    },
+    {
+      "id": "dev-tower-a",
+      "name": "蓝色工艺塔架 A",
+      "kind": "device",
+      "parentId": "space-tower",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 2.6, "y": 10, "z": 3.2 },
+        "position": { "x": -20, "y": 5, "z": -4 },
+        "color": "#087cb9"
+      },
+      "bindings": {
+        "temperature": "towerA.temp",
+        "powerKw": "towerA.power",
+        "status": "towerA.status"
+      }
+    },
+    {
+      "id": "dev-tower-b",
+      "name": "蓝色工艺塔架 B",
+      "kind": "device",
+      "parentId": "space-tower",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 2.6, "y": 10, "z": 3.2 },
+        "position": { "x": -15, "y": 5, "z": -4 },
+        "color": "#0a8ac9"
+      },
+      "bindings": {
+        "temperature": "towerB.temp",
+        "powerKw": "towerB.power",
+        "status": "towerB.status"
+      }
+    },
+    {
+      "id": "asset-silo-a",
+      "name": "白色筒仓 A",
+      "kind": "asset",
+      "parentId": "space-silo",
+      "mesh": {
+        "type": "cylinder",
+        "size": { "x": 3.0, "y": 7, "z": 3.0 },
+        "position": { "x": -26, "y": 3.5, "z": -11 },
+        "color": "#e8ebe6"
+      }
+    },
+    {
+      "id": "asset-silo-b",
+      "name": "白色筒仓 B",
+      "kind": "asset",
+      "parentId": "space-silo",
+      "mesh": {
+        "type": "cylinder",
+        "size": { "x": 3.0, "y": 7, "z": 3.0 },
+        "position": { "x": -22, "y": 3.5, "z": -13 },
+        "color": "#f0efe8"
+      }
+    },
+    {
+      "id": "asset-office",
+      "name": "综合楼 / 办公楼",
+      "kind": "asset",
+      "parentId": "space-plant",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 11, "y": 3.6, "z": 5.5 },
+        "position": { "x": -18, "y": 1.8, "z": 14 },
+        "color": "#dfe7e8"
+      }
+    },
+    {
+      "id": "dev-hall-front",
+      "name": "电解厂房 · 前排",
+      "kind": "device",
+      "parentId": "space-hall",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 26, "y": 3.4, "z": 5 },
+        "position": { "x": 15, "y": 1.7, "z": -1 },
+        "color": "#008dd0"
+      },
+      "bindings": {
+        "temperature": "hallF.temp",
+        "powerKw": "hallF.power",
+        "status": "hallF.status"
+      },
+      "meta": { "label": "CHALCO" }
+    },
+    {
+      "id": "dev-hall-mid",
+      "name": "电解厂房 · 中排",
+      "kind": "device",
+      "parentId": "space-hall",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 27, "y": 3.1, "z": 4.2 },
+        "position": { "x": 14.5, "y": 1.55, "z": -7.5 },
+        "color": "#157fb5"
+      },
+      "bindings": {
+        "temperature": "hallM.temp",
+        "powerKw": "hallM.power",
+        "status": "hallM.status"
+      }
+    },
+    {
+      "id": "dev-hall-back",
+      "name": "电解厂房 · 后排",
+      "kind": "device",
+      "parentId": "space-hall",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 28, "y": 2.9, "z": 4.2 },
+        "position": { "x": 14, "y": 1.45, "z": -13.5 },
+        "color": "#258cbd"
+      },
+      "bindings": {
+        "temperature": "hallB.temp",
+        "powerKw": "hallB.power",
+        "status": "hallB.status"
+      }
+    },
+    {
+      "id": "dev-chimney-1",
+      "name": "红白烟囱 #1",
+      "kind": "device",
+      "parentId": "space-hall",
+      "mesh": {
+        "type": "cylinder",
+        "size": { "x": 1.15, "y": 11, "z": 1.15 },
+        "position": { "x": 24, "y": 5.5, "z": -10 },
+        "color": "#c54943"
+      },
+      "bindings": {
+        "temperature": "chimney1.temp",
+        "status": "chimney1.status"
+      }
+    },
+    {
+      "id": "asset-chimney-1-band",
+      "name": "烟囱 #1 白环段",
+      "kind": "asset",
+      "parentId": "space-hall",
+      "mesh": {
+        "type": "cylinder",
+        "size": { "x": 1.25, "y": 1.4, "z": 1.25 },
+        "position": { "x": 24, "y": 7.2, "z": -10 },
+        "color": "#f3f0e8"
+      }
+    },
+    {
+      "id": "dev-chimney-2",
+      "name": "红白烟囱 #2",
+      "kind": "device",
+      "parentId": "space-hall",
+      "mesh": {
+        "type": "cylinder",
+        "size": { "x": 1.0, "y": 9.5, "z": 1.0 },
+        "position": { "x": 28, "y": 4.75, "z": -6 },
+        "color": "#b8433e"
+      },
+      "bindings": {
+        "temperature": "chimney2.temp",
+        "status": "chimney2.status"
+      }
+    },
+    {
+      "id": "sensor-air",
+      "name": "厂区环境监测点",
+      "kind": "sensor",
+      "parentId": "space-plant",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 0.5, "y": 0.5, "z": 0.5 },
+        "position": { "x": 8, "y": 4, "z": 16 },
+        "color": "#8fa3b8"
+      },
+      "bindings": {
+        "temperature": "plantAir.temp",
+        "status": "plantAir.status"
+      }
+    },
+    {
+      "id": "asset-mountain-far",
+      "name": "背景矿山 · 远景",
+      "kind": "asset",
+      "parentId": "space-plant",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 80, "y": 6, "z": 6 },
+        "position": { "x": 0, "y": 3, "z": -28 },
+        "color": "#8a939e"
+      }
+    },
+    {
+      "id": "asset-mountain-left",
+      "name": "背景矿山 · 左脊",
+      "kind": "asset",
+      "parentId": "space-plant",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 32, "y": 9, "z": 6 },
+        "position": { "x": -20, "y": 4.5, "z": -31 },
+        "color": "#9ea2a8"
+      }
+    }
+  ]
+}

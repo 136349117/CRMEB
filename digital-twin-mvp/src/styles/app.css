@@ -283,6 +283,34 @@ body {
   color: var(--text);
 }
 
+.scene-switcher-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+}
+
+.scene-switcher-actions button {
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: rgba(8, 12, 18, 0.55);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.scene-switcher-actions button:hover {
+  background: rgba(94, 224, 181, 0.08);
+}
+
+.scene-switcher-actions button.is-active {
+  border-color: rgba(94, 224, 181, 0.45);
+  background: rgba(94, 224, 181, 0.14);
+}
+
 @media (max-width: 960px) {
   .app-main {
     grid-template-columns: 1fr;
