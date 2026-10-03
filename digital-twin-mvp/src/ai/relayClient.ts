@@ -1,6 +1,6 @@
 /**
  * 拾捌 AI 中转客户端（Responses API）
- * 配置与探查结论见：Agent Store docs/ai-relay-gpt6-usage.md
+ * 配置见 Agent Store docs/ai-relay-gpt6-usage.md；默认模型 gpt-6-astra。
  * Key 仅通过环境变量注入，勿写入源码。
  */
 
@@ -17,7 +17,7 @@ export function getRelayConfig(): RelayConfig | null {
   return {
     baseUrl: (import.meta.env.VITE_OPENAI_BASE_URL || 'https://ai.558669.xyz/v1').replace(/\/$/, ''),
     apiKey,
-    model: import.meta.env.VITE_OPENAI_MODEL || 'gpt-5.5',
+    model: import.meta.env.VITE_OPENAI_MODEL || 'gpt-6-astra',
     actorHeader: import.meta.env.VITE_OPENAI_ACTOR_HEADER || 'local-image-extension',
   }
 }

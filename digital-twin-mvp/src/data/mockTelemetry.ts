@@ -1,19 +1,25 @@
 import type { TelemetrySample, TwinEntity, TwinStatus } from './types'
 
+/** 铝铸造车间示意通道（温度单位 °C；熔炼炉为高温量级） */
 const CHANNEL_BASE: Record<string, { value: number; unit?: string; drift: number }> = {
-  'press01.temp': { value: 62, unit: '°C', drift: 4 },
-  'press01.vib': { value: 2.1, unit: 'mm/s', drift: 0.8 },
-  'press01.power': { value: 38, unit: 'kW', drift: 6 },
-  'conv01.power': { value: 8.5, unit: 'kW', drift: 1.2 },
-  'cnc01.temp': { value: 48, unit: '°C', drift: 3 },
-  'cnc01.vib': { value: 1.4, unit: 'mm/s', drift: 0.4 },
-  'cnc01.power': { value: 22, unit: 'kW', drift: 4 },
-  'tank01.temp': { value: 28, unit: '°C', drift: 2 },
-  'air01.temp': { value: 24, unit: '°C', drift: 1 },
+  'furnace01.temp': { value: 742, unit: '°C', drift: 18 },
+  'furnace01.power': { value: 420, unit: 'kW', drift: 35 },
+  'ladle01.temp': { value: 710, unit: '°C', drift: 12 },
+  'mold01.temp': { value: 285, unit: '°C', drift: 20 },
+  'cool01.temp': { value: 96, unit: '°C', drift: 8 },
+  'conv01.power': { value: 12, unit: 'kW', drift: 2 },
+  'crane01.power': { value: 28, unit: 'kW', drift: 5 },
+  'air01.temp': { value: 38, unit: '°C', drift: 2 },
 }
 
+const CHANNEL_UNIT: Record<string, string> = Object.fromEntries(
+  Object.entries(CHANNEL_BASE)
+    .filter(([, cfg]) => cfg.unit)
+    .map(([ch, cfg]) => [ch, cfg.unit as string]),
+)
+
 function wave(base: number, drift: number, t: number, seed: number): number {
-  return +(base + Math.sin(t * 0.8 + seed) * drift + Math.sin(t * 2.1 + seed * 0.3) * drift * 0.25).toFixed(2)
+  return +(base + Math.sin(t * 0.8 + seed) * drift + Math.sin(t * 2.1 + seed * 0.3) * drift * 0.25).toFixed(1)
 }
 
 /** 模拟实时遥测：后续可替换为 WebSocket / MQTT / REST */
@@ -26,18 +32,26 @@ export function sampleTelemetry(now = Date.now()): TelemetrySample[] {
     ts: now,
   }))
 
-  // 周期性制造告警：冲压机振动偏高
-  const vibPhase = (Math.sin(t / 12) + 1) / 2
-  const pressVib = samples.find((s) => s.channel === 'press01.vib')
-  if (pressVib && vibPhase > 0.82) {
-    pressVib.value = +(Number(pressVib.value) + 3.5).toFixed(2)
+  // 周期性超温告警：熔炼炉
+  const hotPhase = (Math.sin(t / 11) + 1) / 2
+  const furnaceTemp = samples.find((s) => s.channel === 'furnace01.temp')
+  if (furnaceTemp && hotPhase > 0.78) {
+    furnaceTemp.value = +(Number(furnaceTemp.value) + 55).toFixed(1)
   }
 
+  const moldWarn = Math.sin(t / 8) > 0.85
+
   samples.push(
-    { channel: 'press01.status', value: vibPhase > 0.82 ? 'alarm' : 'normal', ts: now },
+    {
+      channel: 'furnace01.status',
+      value: hotPhase > 0.78 ? 'alarm' : 'normal',
+      ts: now,
+    },
+    { channel: 'ladle01.status', value: hotPhase > 0.9 ? 'warning' : 'normal', ts: now },
+    { channel: 'mold01.status', value: moldWarn ? 'warning' : 'normal', ts: now },
+    { channel: 'cool01.status', value: 'normal', ts: now },
     { channel: 'conv01.status', value: 'normal', ts: now },
-    { channel: 'cnc01.status', value: Math.sin(t / 9) > 0.9 ? 'warning' : 'normal', ts: now },
-    { channel: 'tank01.status', value: 'normal', ts: now },
+    { channel: 'crane01.status', value: Math.sin(t / 15) > 0.92 ? 'warning' : 'normal', ts: now },
     { channel: 'air01.status', value: 'normal', ts: now },
   )
 
@@ -50,10 +64,9 @@ export function deriveStatus(metrics: Record<string, number | string>): TwinStat
     return raw
   }
   const temp = Number(metrics.temperature)
-  const vib = Number(metrics.vibration)
-  if (!Number.isNaN(vib) && vib >= 4.5) return 'alarm'
-  if (!Number.isNaN(temp) && temp >= 70) return 'warning'
-  if (!Number.isNaN(vib) && vib >= 3) return 'warning'
+  if (!Number.isNaN(temp) && temp >= 800) return 'alarm'
+  if (!Number.isNaN(temp) && temp >= 760) return 'warning'
+  if (!Number.isNaN(temp) && temp >= 120 && temp < 400) return 'warning'
   return 'normal'
 }
 
@@ -69,6 +82,19 @@ export function bindEntityMetrics(
     if (sample !== undefined) metrics[key] = sample.value
   }
   return metrics
+}
+
+export function formatMetric(
+  key: string,
+  value: number | string,
+  bindings?: TwinEntity['bindings'],
+): string {
+  if (typeof value !== 'number') return String(value)
+  const channel = bindings?.[key as 'temperature' | 'vibration' | 'powerKw' | 'status']
+  const unit =
+    (channel && CHANNEL_UNIT[channel]) ||
+    (key === 'temperature' ? '°C' : key === 'powerKw' ? 'kW' : '')
+  return unit ? `${value} ${unit}` : String(value)
 }
 
 export const STATUS_COLOR: Record<TwinStatus, string> = {

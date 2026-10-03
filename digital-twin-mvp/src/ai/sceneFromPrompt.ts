@@ -24,7 +24,8 @@ Schema 要点：
     "bindings": { "temperature"?: string, "vibration"?: string, "powerKw"?: string, "status"?: string }
   }]
 }
-约束：最多 10 个实体；坐标合理（厂房尺度）；至少一个 space 作根；设备需有 parentId；bindings 通道名用 ASCII。`
+约束：最多 10 个实体；坐标合理（车间尺度）；至少一个 space 作根；设备需有 parentId；bindings 通道名用 ASCII。
+默认语境：铝加工 / 铸造车间（熔炼炉、浇包、模具、冷却、行车、辊道、铝锭、安全通道等），中文 name。`
 
 function stripFences(text: string): string {
   const trimmed = text.trim()

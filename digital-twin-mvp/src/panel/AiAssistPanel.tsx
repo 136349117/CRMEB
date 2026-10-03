@@ -5,7 +5,9 @@ import { useTwin } from '../twin/TwinContext'
 
 export function AiAssistPanel() {
   const { setScene, setSelectedId } = useTwin()
-  const [prompt, setPrompt] = useState('一个小型机房，两台服务器机柜和一台空调')
+  const [prompt, setPrompt] = useState(
+    '铝铸造小车间：铝锭区、一台熔炼炉、浇铸模具台、冷却架和一条安全通道',
+  )
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const configured = Boolean(getRelayConfig())
@@ -30,7 +32,7 @@ export function AiAssistPanel() {
     <section className="panel ai-panel">
       <header className="panel-header">
         <h2>AI 场景辅助</h2>
-        <p>自然语言 → TwinScene JSON（中转 gpt-5.5 / Responses）</p>
+        <p>自然语言 → TwinScene JSON（中转 gpt-6-astra / Responses）</p>
       </header>
       <textarea
         value={prompt}

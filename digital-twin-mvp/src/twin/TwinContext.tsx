@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import factoryScene from '../data/factory-scene.json'
+import foundryScene from '../data/aluminum-foundry-scene.json'
 import { bindEntityMetrics, deriveStatus, sampleTelemetry } from '../data/mockTelemetry'
 import type { EntityRuntime, TwinEntity, TwinScene } from '../data/types'
 
@@ -25,8 +25,8 @@ interface TwinContextValue {
 const TwinContext = createContext<TwinContextValue | null>(null)
 
 export function TwinProvider({ children }: { children: ReactNode }) {
-  const [scene, setScene] = useState<TwinScene>(factoryScene as TwinScene)
-  const [selectedId, setSelectedId] = useState<string | null>('dev-press-01')
+  const [scene, setScene] = useState<TwinScene>(foundryScene as TwinScene)
+  const [selectedId, setSelectedId] = useState<string | null>('dev-furnace-01')
   const [runtime, setRuntime] = useState<Record<string, EntityRuntime>>({})
 
   useEffect(() => {

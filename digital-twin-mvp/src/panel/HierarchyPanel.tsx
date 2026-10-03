@@ -2,11 +2,12 @@ import { STATUS_COLOR } from '../data/mockTelemetry'
 import type { TwinEntity, TwinKind } from '../data/types'
 import { useTwin } from '../twin/TwinContext'
 
+/** 车间语义标签 */
 const KIND_LABEL: Record<TwinKind, string> = {
-  space: '空间',
+  space: '区域',
   device: '设备',
-  sensor: '传感器',
-  asset: '资产',
+  sensor: '测点',
+  asset: '物料',
 }
 
 function TreeNode({ entity, depth }: { entity: TwinEntity; depth: number }) {
@@ -25,7 +26,7 @@ function TreeNode({ entity, depth }: { entity: TwinEntity; depth: number }) {
       >
         <span className="tree-kind">{KIND_LABEL[entity.kind]}</span>
         <span className="tree-name">{entity.name}</span>
-        {entity.kind !== 'space' && (
+        {entity.kind !== 'space' && entity.kind !== 'asset' && (
           <span className="status-dot" style={{ background: STATUS_COLOR[status] }} title={status} />
         )}
       </button>
@@ -47,7 +48,7 @@ export function HierarchyPanel() {
   return (
     <section className="panel">
       <header className="panel-header">
-        <h2>空间 / 设备</h2>
+        <h2>车间层级</h2>
         <p>{scene.name}</p>
       </header>
       <ul className="tree">

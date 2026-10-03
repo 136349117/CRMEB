@@ -14,7 +14,7 @@ export default function App() {
               Twin<span>Forge</span>
             </h1>
             <p className="tagline">
-              Web 数字孪生 MVP：3D 场景 · 设备层级 · 模拟实时状态。默认通用厂房示意，可替换为真实场景。
+              铝加工铸造车间示意：原料铝锭 → 熔炼 → 浇铸/模具 → 冷却，含行车与安全通道。几何占位 + 模拟遥测。
             </p>
           </div>
           <div className="header-meta">
