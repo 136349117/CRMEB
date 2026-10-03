@@ -19,3 +19,10 @@
 /template/uni-app/node_modules/
 /template/uni-app/unpackage/
 /template/uni-app/.hbuilderx/
+
+# digital-twin-mvp
+/digital-twin-mvp/node_modules/
+/digital-twin-mvp/dist/
+/digital-twin-mvp/.env
+/digital-twin-mvp/.env.local
+/digital-twin-mvp/.env.*.local

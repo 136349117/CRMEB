@@ -1,0 +1,249 @@
+{
+  "id": "aluminum-foundry",
+  "name": "铝加工铸造车间",
+  "description": "简单示意案例：铝锭原料区 → 熔炼 → 浇铸/模具 → 冷却，含行车、辊道与安全通道。几何占位，非真实 BIM。",
+  "resources": [],
+  "camera": {
+    "position": { "x": 16, "y": 13, "z": 16 },
+    "target": { "x": 0, "y": 1, "z": 0 }
+  },
+  "entities": [
+    {
+      "id": "space-workshop",
+      "name": "铸造车间",
+      "kind": "space",
+      "parentId": null,
+      "mesh": {
+        "type": "plane",
+        "size": { "x": 28, "y": 1, "z": 18 },
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "color": "#2c3036"
+      }
+    },
+    {
+      "id": "space-aisle",
+      "name": "安全通道",
+      "kind": "space",
+      "parentId": "space-workshop",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 26, "y": 0.06, "z": 1.4 },
+        "position": { "x": 0, "y": 0.03, "z": 0 },
+        "color": "#c9a227"
+      }
+    },
+    {
+      "id": "space-ingot",
+      "name": "原料 / 铝锭区",
+      "kind": "space",
+      "parentId": "space-workshop",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 7, "y": 0.08, "z": 6 },
+        "position": { "x": -8.5, "y": 0.04, "z": -4.5 },
+        "color": "#3a424c"
+      }
+    },
+    {
+      "id": "space-melt",
+      "name": "熔炼区",
+      "kind": "space",
+      "parentId": "space-workshop",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 7, "y": 0.08, "z": 6 },
+        "position": { "x": -2, "y": 0.04, "z": -4.5 },
+        "color": "#42383a"
+      }
+    },
+    {
+      "id": "space-cast",
+      "name": "浇铸 / 模具区",
+      "kind": "space",
+      "parentId": "space-workshop",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 7, "y": 0.08, "z": 6 },
+        "position": { "x": 5, "y": 0.04, "z": -4.5 },
+        "color": "#3a424c"
+      }
+    },
+    {
+      "id": "space-cool",
+      "name": "冷却区",
+      "kind": "space",
+      "parentId": "space-workshop",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 10, "y": 0.08, "z": 6 },
+        "position": { "x": 2, "y": 0.04, "z": 4.5 },
+        "color": "#34404c"
+      }
+    },
+    {
+      "id": "asset-ingot-stack-a",
+      "name": "铝锭垛 A",
+      "kind": "asset",
+      "parentId": "space-ingot",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 2.2, "y": 1.1, "z": 1.4 },
+        "position": { "x": -10, "y": 0.55, "z": -5.2 },
+        "color": "#a8b0b8"
+      }
+    },
+    {
+      "id": "asset-ingot-stack-b",
+      "name": "铝锭垛 B",
+      "kind": "asset",
+      "parentId": "space-ingot",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 2.0, "y": 0.9, "z": 1.3 },
+        "position": { "x": -7.2, "y": 0.45, "z": -3.8 },
+        "color": "#9aa3ad"
+      }
+    },
+    {
+      "id": "dev-furnace-01",
+      "name": "熔炼炉 #1",
+      "kind": "device",
+      "parentId": "space-melt",
+      "mesh": {
+        "type": "cylinder",
+        "size": { "x": 2.4, "y": 3.2, "z": 2.4 },
+        "position": { "x": -2.2, "y": 1.6, "z": -5.0 },
+        "color": "#6a4a46"
+      },
+      "bindings": {
+        "temperature": "furnace01.temp",
+        "powerKw": "furnace01.power",
+        "status": "furnace01.status"
+      },
+      "meta": {
+        "process": "melting",
+        "note": "铝液高温示意，超温告警"
+      }
+    },
+    {
+      "id": "dev-ladle-01",
+      "name": "浇包",
+      "kind": "device",
+      "parentId": "space-melt",
+      "mesh": {
+        "type": "cylinder",
+        "size": { "x": 1.0, "y": 1.2, "z": 1.0 },
+        "position": { "x": -0.2, "y": 0.7, "z": -3.2 },
+        "color": "#7a5a52"
+      },
+      "bindings": {
+        "temperature": "ladle01.temp",
+        "status": "ladle01.status"
+      }
+    },
+    {
+      "id": "dev-mold-line",
+      "name": "模具台",
+      "kind": "device",
+      "parentId": "space-cast",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 4.5, "y": 0.7, "z": 2.2 },
+        "position": { "x": 5.2, "y": 0.4, "z": -5.0 },
+        "color": "#5c6672"
+      },
+      "bindings": {
+        "temperature": "mold01.temp",
+        "status": "mold01.status"
+      }
+    },
+    {
+      "id": "asset-mold-a",
+      "name": "砂型模具 A",
+      "kind": "asset",
+      "parentId": "space-cast",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 1.1, "y": 0.8, "z": 0.9 },
+        "position": { "x": 4.0, "y": 1.15, "z": -5.0 },
+        "color": "#8b7355"
+      }
+    },
+    {
+      "id": "asset-mold-b",
+      "name": "砂型模具 B",
+      "kind": "asset",
+      "parentId": "space-cast",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 1.1, "y": 0.8, "z": 0.9 },
+        "position": { "x": 6.0, "y": 1.15, "z": -5.0 },
+        "color": "#7e684c"
+      }
+    },
+    {
+      "id": "dev-cool-rack",
+      "name": "冷却架",
+      "kind": "device",
+      "parentId": "space-cool",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 5.5, "y": 1.6, "z": 1.8 },
+        "position": { "x": 1.5, "y": 0.85, "z": 4.8 },
+        "color": "#4d6478"
+      },
+      "bindings": {
+        "temperature": "cool01.temp",
+        "status": "cool01.status"
+      }
+    },
+    {
+      "id": "dev-conveyor",
+      "name": "辊道传送",
+      "kind": "device",
+      "parentId": "space-workshop",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 12, "y": 0.35, "z": 1.1 },
+        "position": { "x": 1, "y": 0.3, "z": 1.6 },
+        "color": "#6e7a88"
+      },
+      "bindings": {
+        "powerKw": "conv01.power",
+        "status": "conv01.status"
+      }
+    },
+    {
+      "id": "dev-crane",
+      "name": "天车 / 行车",
+      "kind": "device",
+      "parentId": "space-workshop",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 14, "y": 0.45, "z": 1.2 },
+        "position": { "x": -1, "y": 5.2, "z": -2.5 },
+        "color": "#c45c26"
+      },
+      "bindings": {
+        "powerKw": "crane01.power",
+        "status": "crane01.status"
+      }
+    },
+    {
+      "id": "sensor-air-01",
+      "name": "车间温湿度点",
+      "kind": "sensor",
+      "parentId": "space-workshop",
+      "mesh": {
+        "type": "box",
+        "size": { "x": 0.35, "y": 0.35, "z": 0.35 },
+        "position": { "x": 10, "y": 3.2, "z": 6 },
+        "color": "#8fa3b8"
+      },
+      "bindings": {
+        "temperature": "air01.temp",
+        "status": "air01.status"
+      }
+    }
+  ]
+}
